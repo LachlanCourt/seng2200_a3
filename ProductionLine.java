@@ -12,14 +12,14 @@ public class ProductionLine
     private Deque<Item> Q34;
     private Deque<Item> Q45;
 
-    private Stage S0;
-    private Stage S1;
-    private Stage S2A;
-    private Stage S2B;
-    private Stage S3;
-    private Stage S4A;
-    private Stage S4B;
-    private Stage S5;
+    private InitialStage S0;
+    private MidStage S1;
+    private MidStage S2A;
+    private MidStage S2B;
+    private MidStage S3;
+    private MidStage S4A;
+    private MidStage S4B;
+    private FinalStage S5;
 
     private double M;
     private double N;
@@ -37,31 +37,44 @@ public class ProductionLine
         N = N_;
         Qmax = Qmax_;
 
+
         Q01 = new LinkedList<>();
-        completionTimes = new PriorityQueue<TimeEvent>();
+
+
+        S0 = new InitialStage(Qmax, Q01);
+
+
+        completionTimes = new PriorityQueue<>();
         currentTime = 0;
     }
 
     public void produce()
     {
-        // TEMPORARY-----------------------------------------
-        TimeEvent temp;
-        for (int i = 0; i < 1000; i++)
-        {
-            temp = new TimeEvent(getProcessingTime());
-            completionTimes.add(temp);
-        }
-        //----------------------------------------------------
 
         // Main run
         while (currentTime < MAX_TIME)
         {
-            currentTime += completionTimes.poll().getCompletionTime();
-            if (completionTimes.isEmpty())
+            TimeEvent temp = S0.process(currentTime, getProcessingTime());
+            if (temp != null)
             {
-                System.out.println("No more events!");
+                completionTimes.add(temp);
+                System.out.println(completionTimes.size());
+            }
+
+            //TEMPORARY --------------------------
+            if (completionTimes.size() == 0)
+            {
                 break;
             }
+            //-------------------------------------
+
+            currentTime = completionTimes.poll().getCompletionTime();
+
+//            if (completionTimes.isEmpty())
+//            {
+//                System.out.println("No more events!");
+//                break;
+//            }
         }
     }
 
