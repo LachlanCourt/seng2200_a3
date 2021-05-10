@@ -6,9 +6,6 @@ public class PA3
     private double N;
     private double Qmax;
 
-
-    private Random rd = new Random(24601);
-
     public static void main(String[] args)
     {
         if (args.length != 3)
@@ -26,19 +23,10 @@ public class PA3
         M = Double.valueOf(args[0]); // Average processing time
         N = Double.valueOf(args[1]); // Range of processing time
         Qmax = Double.valueOf(args[2]); // Capacity of storage
-        for (int i = 0; i < 20; i++)
-        {
-            System.out.println(getProcessingTime());
-        }
 
         ProductionLine line = new ProductionLine(M, N, Qmax);
-        line.run();
+        line.produce();
         System.out.println(line.report());
 
-    }
-
-    public double getProcessingTime()
-    {
-        return M + N * (rd.nextDouble() - 0.5);
     }
 }

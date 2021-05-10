@@ -10,6 +10,16 @@ public class Item
 
     }
 
+    public void setID(String uniqueID_)
+    {
+        uniqueID = uniqueID_;
+    }
+
+    public String getID()
+    {
+        return uniqueID;
+    }
+
     public void addProcess(Process inData)
     {
         processes.add(inData);
