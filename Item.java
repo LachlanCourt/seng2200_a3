@@ -7,7 +7,7 @@ public class Item
 
     public Item()
     {
-
+        processes = new ArrayList<>();
     }
 
     public void setID(String uniqueID_)
@@ -23,5 +23,10 @@ public class Item
     public void addProcess(Process inData)
     {
         processes.add(inData);
+    }
+
+    public double getLastProcessEndTime()
+    {
+        return processes.get(processes.size() - 1).getEndTime();
     }
 }
