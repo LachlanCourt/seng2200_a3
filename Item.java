@@ -1,8 +1,17 @@
+import java.util.ArrayList;
+
 public class Item
 {
     private String uniqueID;
+    private ArrayList<Process> processes;
+
     public Item()
     {
 
+    }
+
+    public void addProcess(Process inData)
+    {
+        processes.add(inData);
     }
 }
