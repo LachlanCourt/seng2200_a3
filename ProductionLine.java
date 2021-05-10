@@ -37,9 +37,13 @@ public class ProductionLine
         N = N_;
         Qmax = Qmax_;
 
-        S0 = new InitialStage(Q01);
 
         Q01 = new LinkedList<>();
+
+
+        S0 = new InitialStage(Qmax, Q01);
+
+
         completionTimes = new PriorityQueue<>();
         currentTime = 0;
     }
@@ -57,7 +61,15 @@ public class ProductionLine
                 System.out.println(completionTimes.size());
             }
 
+            //TEMPORARY --------------------------
+            if (completionTimes.size() == 0)
+            {
+                break;
+            }
+            //-------------------------------------
+
             currentTime = completionTimes.poll().getCompletionTime();
+
 //            if (completionTimes.isEmpty())
 //            {
 //                System.out.println("No more events!");

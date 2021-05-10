@@ -2,9 +2,10 @@ import java.util.Deque;
 
 public abstract class Stage
 {
-    protected boolean busy = false;
+    protected String status = "waiting";
     protected Item item;
 
+    protected double Qmax;
     protected Deque<Item> prev;
     protected Deque<Item> next;
 

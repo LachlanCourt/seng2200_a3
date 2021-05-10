@@ -2,26 +2,41 @@ import java.util.Deque;
 
 public class InitialStage extends Stage
 {
-    public InitialStage(Deque<Item> next_)
+    public InitialStage(double Qmax_, Deque<Item> next_)
     {
+        Qmax = Qmax_;
         next = next_;
-        busy = false;
+        status = "waiting";
     }
 
     @Override
     public TimeEvent process(double currentTime, double processingTime)
     {
-        if (busy)
+
+
+        if (status.compareTo("busy") == 0)
         {
             if (currentTime == item.getLastProcessEndTime())
             {
-                busy = false;
+                status = "waiting";
+                System.out.println(Qmax);
+                if (next.size() < Qmax)
+                {
+                    System.out.println("Adding");
+                    // Add to queue
+                    next.add(item);
+                }
+                else
+                {
+                    System.out.println("Blocking");
+                    status = "blocked";
+                }
             }
-            // Add to queue
+            // Intentionally no break here, go to waiting
         }
-        if (!busy)
+        if (status.compareTo("waiting") == 0)
         {
-            busy = true;
+            status = "busy";
             // Create an item
             item = new Item();
             // Set processing time
@@ -29,6 +44,10 @@ public class InitialStage extends Stage
             item.addProcess(newProcess);
             // Wait for time to be up
             return new TimeEvent(newProcess.getEndTime());
+        }
+        if (status.compareTo("blocked") == 0)
+        {
+            System.out.println("Blocked");
         }
 
         return null;
