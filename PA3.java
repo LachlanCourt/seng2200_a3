@@ -30,6 +30,11 @@ public class PA3
         {
             System.out.println(getProcessingTime());
         }
+
+        ProductionLine line = new ProductionLine(M, N, Qmax);
+        line.run();
+        System.out.println(line.report());
+
     }
 
     public double getProcessingTime()
