@@ -44,15 +44,24 @@ public class ProductionLine
 
     public void produce()
     {
+        // TEMPORARY-----------------------------------------
+        TimeEvent temp;
+        for (int i = 0; i < 1000; i++)
+        {
+            temp = new TimeEvent(getProcessingTime());
+            completionTimes.add(temp);
+        }
+        //----------------------------------------------------
+
+        // Main run
         while (currentTime < MAX_TIME)
         {
-            TimeEvent temp;
-            for (int i = 0; i < 40; i++)
+            currentTime += completionTimes.poll().getCompletionTime();
+            if (completionTimes.isEmpty())
             {
-                temp = new TimeEvent(getProcessingTime());
-                completionTimes.add(temp);
+                System.out.println("No more events!");
+                break;
             }
-            break;
         }
     }
 
