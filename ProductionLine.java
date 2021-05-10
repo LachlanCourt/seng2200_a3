@@ -52,6 +52,7 @@ public class ProductionLine
                 temp = new TimeEvent(getProcessingTime());
                 completionTimes.add(temp);
             }
+            break;
         }
     }
 
