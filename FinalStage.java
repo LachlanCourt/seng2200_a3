@@ -8,8 +8,15 @@ public class FinalStage extends Stage
     public FinalStage(StorageQueue<Item> prev_)
     {
         prev = prev_;
+        processingFactor = 1;
         status = "waiting";
         completedItems = new ArrayList<Item>();
+    }
+
+    public FinalStage(StorageQueue<Item> prev_, double processingFactor_)
+    {
+        this(prev_);
+        this.processingFactor = processingFactor_;
     }
 
     @Override

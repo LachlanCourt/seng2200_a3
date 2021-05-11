@@ -9,6 +9,8 @@ public abstract class Stage
     private static double N;
     protected static Random rd;
 
+    protected double processingFactor;
+
     protected StorageQueue<Item> prev;
     protected StorageQueue<Item> next;
 
@@ -42,7 +44,7 @@ public abstract class Stage
 
     protected double getProcessingTime()
     {
-        return M + N * (rd.nextDouble() - 0.5);
+        return (processingFactor * M) + (processingFactor * N) * (rd.nextDouble() - 0.5);
     }
 
     protected abstract void busy(double currentTime);

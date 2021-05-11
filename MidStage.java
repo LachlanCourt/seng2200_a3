@@ -5,7 +5,14 @@ public class MidStage extends Stage
     {
         prev = prev_;
         next = next_;
+        processingFactor = 1;
         status = "waiting";
+    }
+
+    public MidStage(StorageQueue<Item> prev_, StorageQueue<Item> next_, double processingFactor_)
+    {
+        this(prev_, next_);
+        this.processingFactor = processingFactor_;
     }
 
     @Override

@@ -33,7 +33,7 @@ public class ProductionLine
     {
         Qmax = Qmax_;
 
-        rd = new Random(24601);
+        rd = new Random(534643);
         initialiseLine(M_, N_);
 
         completionTimes = new PriorityQueue<>();
@@ -112,15 +112,15 @@ public class ProductionLine
         stages.add(S0);
         S1 = new MidStage(Q01, Q12);
         stages.add(S1);
-        S2A = new MidStage(Q12, Q23);
+        S2A = new MidStage(Q12, Q23, 2);
         stages.add(S2A);
-        S2B = new MidStage(Q12, Q23);
+        S2B = new MidStage(Q12, Q23, 2);
         stages.add(S2B);
         S3 = new MidStage(Q23, Q34);
         stages.add(S3);
-        S4A = new MidStage(Q34, Q45);
+        S4A = new MidStage(Q34, Q45, 2);
         stages.add(S4A);
-        S4B = new MidStage(Q34, Q45);
+        S4B = new MidStage(Q34, Q45, 2);
         stages.add(S4B);
         S5 = new FinalStage(Q45);
         stages.add(S5);

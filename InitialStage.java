@@ -8,7 +8,14 @@ public class InitialStage extends Stage
         setProcessingParams(M_, N_);
         rd = rd_;
         next = next_;
+        processingFactor = 1;
         status = "waiting";
+    }
+
+    public InitialStage(StorageQueue<Item> next_, double M_, double N_, Random rd_, double processingFactor_)
+    {
+        this(next_, M_, N_, rd_);
+        this.processingFactor = processingFactor_;
     }
 
     @Override
