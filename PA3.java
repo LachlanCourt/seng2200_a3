@@ -1,10 +1,8 @@
-import java.util.Random;
-
 public class PA3
 {
     private double M;
     private double N;
-    private double Qmax;
+    private int Qmax;
 
     public static void main(String[] args)
     {
@@ -22,7 +20,7 @@ public class PA3
         // Set up values
         M = Double.valueOf(args[0]); // Average processing time
         N = Double.valueOf(args[1]); // Range of processing time
-        Qmax = Double.valueOf(args[2]); // Capacity of storage
+        Qmax = Integer.valueOf(args[2]); // Capacity of storage
 
         ProductionLine line = new ProductionLine(M, N, Qmax);
         line.produce();

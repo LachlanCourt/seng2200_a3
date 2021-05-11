@@ -1,16 +1,13 @@
 import java.sql.Time;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Random;
+import java.util.*;
 
 public class ProductionLine
 {
-    private Deque<Item> Q01;
-    private Deque<Item> Q12;
-    private Deque<Item> Q23;
-    private Deque<Item> Q34;
-    private Deque<Item> Q45;
+    private StorageQueue<Item> Q01;
+    private Queue<Item> Q12;
+    private Queue<Item> Q23;
+    private Queue<Item> Q34;
+    private Queue<Item> Q45;
 
     private InitialStage S0;
     private MidStage S1;
@@ -23,25 +20,25 @@ public class ProductionLine
 
     private double M;
     private double N;
-    private double Qmax;
+    private int Qmax;
 
     PriorityQueue<TimeEvent> completionTimes;
     double currentTime;
-    double MAX_TIME = 1000000;
+    static final double MAX_TIME = 1000000;
 
     private Random rd = new Random(24601);
 
-    public ProductionLine(double M_, double N_, double Qmax_)
+    public ProductionLine(double M_, double N_, int Qmax_)
     {
         M = M_;
         N = N_;
         Qmax = Qmax_;
 
 
-        Q01 = new LinkedList<>();
+        Q01 = new StorageQueue<Item>(Qmax);
 
 
-        S0 = new InitialStage(Qmax, Q01);
+        S0 = new InitialStage(Q01);
 
 
         completionTimes = new PriorityQueue<>();

@@ -1,12 +1,22 @@
 public class MidStage extends Stage
 {
     @Override
-    public TimeEvent process(double currentTime, double processingTime)
-    {
-        // Take item from Queue
-        // Set processing time
-        // Wait for processing time
-        // Add to Queue
+    protected void busy(double currentTime) {
+
+    }
+
+    @Override
+    protected TimeEvent waiting(double currentTime, double processingTime) {
         return null;
+    }
+
+    @Override
+    protected void blocked() {
+
+    }
+
+    @Override
+    protected void starved() {
+
     }
 }
