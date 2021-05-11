@@ -1,6 +1,5 @@
 public class MidStage extends Stage
 {
-
     public MidStage(StorageQueue<Item> prev_, StorageQueue<Item> next_, String id_)
     {
         prev = prev_;
@@ -87,6 +86,4 @@ public class MidStage extends Stage
             return null;
         }
     }
-
-
 }
