@@ -3,12 +3,6 @@ import java.util.*;
 
 public class ProductionLine
 {
-    private StorageQueue<Item> Q01;
-    private StorageQueue<Item> Q12;
-    private StorageQueue<Item> Q23;
-    private StorageQueue<Item> Q34;
-    private StorageQueue<Item> Q45;
-
     private InitialStage S0;
     private MidStage S1;
     private MidStage S2A;
@@ -77,13 +71,22 @@ public class ProductionLine
     public String report()
     {
         String working = "";
-        working += "Report on production\n";
-        working += "Number of items produced: " + S5.report().size();
-        working += "\nQueues:\n";
+        working += "REPORT ON PRODUCTION\n\n";
+        working += "Number of items produced: " + S5.report().size() + "\n\n";
+        working += "Storage Queues:\n";
         for (int i = 0; i < queues.size(); i++)
         {
-            working += "AvgItems: " + queues.get(i).getAvgItems(MAX_TIME) + "    AvgTime: " + queues.get(i).getAvgTime() + "\n";
+            working += queues.get(i).getID() + ":    " + "AvgItems: " + String.format("%5.4f", queues.get(i).getAvgItems(MAX_TIME)) + "    AvgTime: " + String.format("%5.4f", queues.get(i).getAvgTime()) + "\n";
         }
+        ArrayList<Item> itemReport = S5.report();
+        for (int i = 0; i < itemReport.size(); i++)
+        {
+
+        }
+
+        // Output to text file here----
+
+        //-----------------------------
         return working;
     }
 
@@ -91,35 +94,34 @@ public class ProductionLine
     {
         queues = new ArrayList<StorageQueue<Item>>();
 
-        Q01 = new StorageQueue<Item>(Qmax);
+        StorageQueue<Item> Q01 = new StorageQueue<Item>(Qmax, "Q01");
         queues.add(Q01);
-        Q12 = new StorageQueue<Item>(Qmax);
+        StorageQueue<Item> Q12 = new StorageQueue<Item>(Qmax, "Q12");
         queues.add(Q12);
-        Q23 = new StorageQueue<Item>(Qmax);
+        StorageQueue<Item> Q23 = new StorageQueue<Item>(Qmax, "Q23");
         queues.add(Q23);
-        Q34 = new StorageQueue<Item>(Qmax);
+        StorageQueue<Item> Q34 = new StorageQueue<Item>(Qmax, "Q34");
         queues.add(Q34);
-        Q45 = new StorageQueue<Item>(Qmax);
+        StorageQueue<Item> Q45 = new StorageQueue<Item>(Qmax, "Q45");
         queues.add(Q45);
 
         stages = new ArrayList<Stage>();
 
-        S0 = new InitialStage(Q01, M, N, rd);
+        S0 = new InitialStage(Q01, "S0", M, N, rd);
         stages.add(S0);
-        S1 = new MidStage(Q01, Q12);
+        S1 = new MidStage(Q01, Q12, "S1");
         stages.add(S1);
-        S2A = new MidStage(Q12, Q23, 2);
+        S2A = new MidStage(Q12, Q23, "S2A", 2);
         stages.add(S2A);
-        S2B = new MidStage(Q12, Q23, 2);
+        S2B = new MidStage(Q12, Q23, "S2B", 2);
         stages.add(S2B);
-
-        S3 = new MidStage(Q23, Q34);
+        S3 = new MidStage(Q23, Q34, "S3");
         stages.add(S3);
-        S4A = new MidStage(Q34, Q45, 2);
+        S4A = new MidStage(Q34, Q45, "S4A", 2);
         stages.add(S4A);
-        S4B = new MidStage(Q34, Q45, 2);
+        S4B = new MidStage(Q34, Q45, "S4B", 2);
         stages.add(S4B);
-        S5 = new FinalStage(Q45);
+        S5 = new FinalStage(Q45, "S5");
         stages.add(S5);
     }
 }

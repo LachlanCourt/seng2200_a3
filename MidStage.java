@@ -1,17 +1,18 @@
 public class MidStage extends Stage
 {
 
-    public MidStage(StorageQueue<Item> prev_, StorageQueue<Item> next_)
+    public MidStage(StorageQueue<Item> prev_, StorageQueue<Item> next_, String id_)
     {
         prev = prev_;
         next = next_;
+        id = id_;
         processingFactor = 1;
         status = "waiting";
     }
 
-    public MidStage(StorageQueue<Item> prev_, StorageQueue<Item> next_, double processingFactor_)
+    public MidStage(StorageQueue<Item> prev_, StorageQueue<Item> next_, String id_, double processingFactor_)
     {
-        this(prev_, next_);
+        this(prev_, next_, id_);
         this.processingFactor = processingFactor_;
     }
 
@@ -59,7 +60,7 @@ public class MidStage extends Stage
             item = prev.remove(currentTime);
             modificationFlag = true;
             double processingTime = getProcessingTime();
-            ProcessEvent newProcessEvent = new ProcessEvent(currentTime, currentTime + processingTime);
+            ProcessEvent newProcessEvent = new ProcessEvent(currentTime, currentTime + processingTime, id);
             item.addProcess(newProcessEvent);
 
             // Wait for time to be up

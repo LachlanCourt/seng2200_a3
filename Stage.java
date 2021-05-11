@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Random;
 
 public abstract class Stage
@@ -14,6 +13,7 @@ public abstract class Stage
 
     protected StorageQueue<Item> prev;
     protected StorageQueue<Item> next;
+    protected String id;
 
     protected static boolean modificationFlag = false;
 

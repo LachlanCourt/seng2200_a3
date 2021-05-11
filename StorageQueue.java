@@ -4,6 +4,7 @@ import java.util.Queue;
 public class StorageQueue<T extends Item>
 {
     private int Qmax;
+    private String id;
     Queue<T> items;
 
     private double itemsInQueueRecord;
@@ -12,10 +13,10 @@ public class StorageQueue<T extends Item>
     private int thruput;
     private double timeInQueueRecord;
 
-
-    public StorageQueue(int Qmax_)
+    public StorageQueue(int Qmax_, String id_)
     {
         Qmax = Qmax_;
+        id = id_;
         items = new LinkedList<>();
         oldTime = 0;
         itemsInQueueRecord = 0;
@@ -66,6 +67,11 @@ public class StorageQueue<T extends Item>
     public double getAvgTime()
     {
         return timeInQueueRecord / thruput;
+    }
+
+    public String getID()
+    {
+        return id;
     }
 
 }
