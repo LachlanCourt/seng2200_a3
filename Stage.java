@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Random;
 
 public abstract class Stage
@@ -13,6 +14,8 @@ public abstract class Stage
 
     protected StorageQueue<Item> prev;
     protected StorageQueue<Item> next;
+
+    protected static boolean modificationFlag = false;
 
     public TimeEvent process(double currentTime)
     {

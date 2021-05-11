@@ -1,9 +1,9 @@
-public class Process
+public class ProcessEvent
 {
     double startTime;
     double endTime;
 
-    public Process(double startTime_, double endTime_)
+    public ProcessEvent(double startTime_, double endTime_)
     {
         startTime = startTime_;
         endTime = endTime_;
@@ -18,5 +18,10 @@ public class Process
     public double getEndTime()
     {
         return endTime;
+    }
+
+    public double getStartTime()
+    {
+        return startTime;
     }
 }

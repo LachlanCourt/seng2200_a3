@@ -3,11 +3,11 @@ import java.util.ArrayList;
 public class Item
 {
     private String uniqueID;
-    private ArrayList<Process> processes;
+    private ArrayList<ProcessEvent> processEvents;
 
     public Item()
     {
-        processes = new ArrayList<>();
+        processEvents = new ArrayList<>();
     }
 
     public void setID(String uniqueID_)
@@ -20,13 +20,18 @@ public class Item
         return uniqueID;
     }
 
-    public void addProcess(Process inData)
+    public void addProcess(ProcessEvent inData)
     {
-        processes.add(inData);
+        processEvents.add(inData);
     }
 
     public double getLastProcessEndTime()
     {
-        return processes.get(processes.size() - 1).getEndTime();
+        return processEvents.get(processEvents.size() - 1).getEndTime();
+    }
+
+    public double getStartProcessEndTime()
+    {
+        return processEvents.get(processEvents.size() - 1).getStartTime();
     }
 }

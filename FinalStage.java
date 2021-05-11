@@ -39,7 +39,6 @@ public class FinalStage extends Stage
     @Override
     protected void starved()
     {
-        System.out.println("Starved");
         if (prev.size() > 0)
         {
             status = "waiting";
@@ -53,12 +52,14 @@ public class FinalStage extends Stage
         if (prev.size() > 0)
         {
             status = "busy";
-            item = prev.remove();
+            item = prev.remove(currentTime);
+            modificationFlag = true;
             double processingTime = getProcessingTime();
-            Process newProcess = new Process(currentTime, currentTime + processingTime);
-            item.addProcess(newProcess);
+            ProcessEvent newProcessEvent = new ProcessEvent(currentTime, currentTime + processingTime);
+            item.addProcess(newProcessEvent);
+
             // Wait for time to be up
-            return new TimeEvent(newProcess.getEndTime());
+            return new TimeEvent(newProcessEvent.getEndTime());
         }
         else
         {

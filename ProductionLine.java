@@ -32,8 +32,8 @@ public class ProductionLine
     public ProductionLine(double M_, double N_, int Qmax_)
     {
         Qmax = Qmax_;
+        rd = new Random(100);
 
-        rd = new Random(24601);
         initialiseLine(M_, N_);
 
         completionTimes = new PriorityQueue<>();
@@ -46,17 +46,20 @@ public class ProductionLine
         // Main run
         while (currentTime < MAX_TIME)
         {
-
-            for (int i = 0; i < stages.size(); i++)
+            // Loop until all stages are effectively "Busy" - No modification is happening in the queues whether adding or removing
+            do
             {
-            temp = stages.get(i).process(currentTime);
-            if (temp != null)
-            {
-                completionTimes.add(temp);
-                System.out.println(completionTimes.size());
-            }}
-
-
+                S0.resetModificationFlag();
+                for (int i = 0; i < stages.size(); i++)
+                {
+                    temp = stages.get(i).process(currentTime);
+                    if (temp != null)
+                    {
+                        completionTimes.add(temp);
+                    }
+                }
+            }
+            while (S0.getModificationFlag());
 
             //TEMPORARY --------------------------
             if (completionTimes.size() == 0)
@@ -66,28 +69,21 @@ public class ProductionLine
             }
             //-------------------------------------
 
+            // Now that all of the stages are actively processing, jump to the next time event
             currentTime = completionTimes.poll().getCompletionTime();
-
-//            if (completionTimes.isEmpty())
-//            {
-//                System.out.println("No more events!");
-//                break;
-//            }
         }
     }
 
     public String report()
     {
         String working = "";
-        working += "Report on production";
-
-        ArrayList<Item> temp = S5.report();
-        int size = temp.size();
-        for (int i = 0; i < size; i++)
+        working += "Report on production\n";
+        working += "Number of items produced: " + S5.report().size();
+        working += "\nQueues:\n";
+        for (int i = 0; i < queues.size(); i++)
         {
-            working += temp.get(i) + "\n";
+            working += "AvgItems: " + queues.get(i).getAvgItems(MAX_TIME) + "    AvgTime: " + queues.get(i).getAvgTime() + "\n";
         }
-        working += temp.size();
         return working;
     }
 
@@ -116,6 +112,7 @@ public class ProductionLine
         stages.add(S2A);
         S2B = new MidStage(Q12, Q23, 2);
         stages.add(S2B);
+
         S3 = new MidStage(Q23, Q34);
         stages.add(S3);
         S4A = new MidStage(Q34, Q45, 2);

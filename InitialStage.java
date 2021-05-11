@@ -1,4 +1,3 @@
-import java.util.Queue;
 import java.util.Random;
 
 public class InitialStage extends Stage
@@ -26,8 +25,11 @@ public class InitialStage extends Stage
             status = "waiting";
             if (!next.add(item))
             {
-                System.out.println("Blocking");
                 status = "blocked";
+            }
+            else
+            {
+                modificationFlag = true;
             }
         }
     }
@@ -56,11 +58,20 @@ public class InitialStage extends Stage
         item = new Item();
         // Set processing time
         double processingTime = getProcessingTime();
-        Process newProcess = new Process(currentTime, currentTime + processingTime);
-        item.addProcess(newProcess);
+        ProcessEvent newProcessEvent = new ProcessEvent(currentTime, currentTime + processingTime);
+        item.addProcess(newProcessEvent);
         // Wait for time to be up
-        return new TimeEvent(newProcess.getEndTime());
+        return new TimeEvent(newProcessEvent.getEndTime());
     }
 
+    public boolean getModificationFlag()
+    {
+        return modificationFlag;
+    }
+
+    public void resetModificationFlag()
+    {
+        modificationFlag = false;
+    }
 
 }
