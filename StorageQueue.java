@@ -3,8 +3,8 @@ import java.util.Queue;
 
 public class StorageQueue<T extends Item>
 {
-    private int Qmax;
-    private String id;
+    private final int Qmax;
+    private final String id;
     Queue<T> items;
 
     private double itemsInQueueRecord;

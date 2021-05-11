@@ -1,4 +1,3 @@
-import java.sql.Time;
 import java.util.*;
 
 public class ProductionLine
@@ -15,7 +14,7 @@ public class ProductionLine
     ArrayList<Stage> stages;
     ArrayList<StorageQueue<Item>> queues;
 
-    private int Qmax;
+    private final int Qmax;
 
     PriorityQueue<TimeEvent> completionTimes;
     double currentTime;
