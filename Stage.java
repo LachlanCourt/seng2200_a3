@@ -10,11 +10,8 @@ public abstract class Stage
     {
         TimeEvent temp = null;
         if (status.compareTo("busy") == 0)
-        {busy(currentTime);
-        }
-        if (status.compareTo("waiting") == 0)
         {
-            temp = waiting(currentTime, processingTime);
+            busy(currentTime);
         }
         if (status.compareTo("blocked") == 0)
         {
@@ -24,12 +21,19 @@ public abstract class Stage
         {
             starved();
         }
+        if (status.compareTo("waiting") == 0)
+        {
+            temp = waiting(currentTime, processingTime);
+        }
         return temp;
     }
 
     protected abstract void busy(double currentTime);
+
     protected abstract TimeEvent waiting(double currentTime, double processingTime);
+
     protected abstract void blocked();
+
     protected abstract void starved();
 
 }

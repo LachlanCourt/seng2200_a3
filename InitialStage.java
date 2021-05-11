@@ -1,16 +1,21 @@
 import java.util.Queue;
 
-public class InitialStage extends Stage {
-    public InitialStage(StorageQueue<Item> next_) {
+public class InitialStage extends Stage
+{
+    public InitialStage(StorageQueue<Item> next_)
+    {
         next = next_;
         status = "waiting";
     }
 
     @Override
-    protected void busy(double currentTime) {
-        if (currentTime == item.getLastProcessEndTime()) {
+    protected void busy(double currentTime)
+    {
+        if (currentTime == item.getLastProcessEndTime())
+        {
             status = "waiting";
-            if (!next.add(item)){
+            if (!next.add(item))
+            {
                 System.out.println("Blocking");
                 status = "blocked";
             }
@@ -18,7 +23,24 @@ public class InitialStage extends Stage {
     }
 
     @Override
-    protected TimeEvent waiting(double currentTime, double processingTime) {
+    protected void blocked()
+    {
+        if (next.add(item))
+        {
+            status = "waiting";
+        }
+    }
+
+    @Override
+    protected void starved()
+    {
+        // Will never be starved
+        return;
+    }
+
+    @Override
+    protected TimeEvent waiting(double currentTime, double processingTime)
+    {
         status = "busy";
         // Create an item
         item = new Item();
@@ -29,13 +51,5 @@ public class InitialStage extends Stage {
         return new TimeEvent(newProcess.getEndTime());
     }
 
-    @Override
-    protected void blocked() {
-        System.out.println("Blocked");
-    }
 
-    @Override
-    protected void starved() {
-
-    }
 }
