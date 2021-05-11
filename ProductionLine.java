@@ -1,3 +1,6 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.*;
 
 public class ProductionLine
@@ -70,7 +73,7 @@ public class ProductionLine
     public String report()
     {
         String working = "";
-        working += "REPORT ON PRODUCTION\n\n";
+        working += "PRODUCTION REPORT\n\n";
         working += "Number of items produced: " + S5.report().size() + "\n\n";
 
         // PRODUCTION STAGES -------------------------------------------------------------------------------------------
@@ -127,9 +130,21 @@ public class ProductionLine
 
         working += "\nProduction Paths:\n";
         working += "S2A -> S4A: " + aa + "\n" + "S2A -> S4B: " + ab + "\n" + "S2B -> S4A: " + ba + "\n" + "S2B -> S4B: " + bb + "\n";
-        // Output to text file here----
 
-        //-----------------------------
+        // Output to text file
+        PrintWriter out;
+        try
+        {
+            out = new PrintWriter("Report.txt");
+        }
+        catch (FileNotFoundException e)
+        {
+            System.err.println(e);
+            return working;
+        }
+        out.println(working);
+        out.close();
+
         return working;
     }
 
