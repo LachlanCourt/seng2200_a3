@@ -1,21 +1,24 @@
-import java.util.ArrayList;
 import java.util.Random;
 
 public abstract class Stage
 {
-    protected String status = "waiting";
-    protected Item item;
-
+    protected static boolean modificationFlag = false;
     private static double M;
     private static double N;
     protected static Random rd;
 
     protected double processingFactor;
 
+    protected String status = "waiting";
+    protected Item item;
+
     protected StorageQueue<Item> prev;
     protected StorageQueue<Item> next;
+    protected String id;
 
-    protected static boolean modificationFlag = false;
+    protected double oldTime;
+    protected double timeStarved;
+    protected double timeBlocked;
 
     public TimeEvent process(double currentTime)
     {
@@ -26,11 +29,11 @@ public abstract class Stage
         }
         if (status.compareTo("blocked") == 0)
         {
-            blocked();
+            blocked(currentTime);
         }
         if (status.compareTo("starved") == 0)
         {
-            starved();
+            starved(currentTime);
         }
         if (status.compareTo("waiting") == 0)
         {
@@ -50,12 +53,27 @@ public abstract class Stage
         return (processingFactor * M) + (processingFactor * N) * (rd.nextDouble() - 0.5);
     }
 
+    public double getTimeStarved()
+    {
+        return timeStarved;
+    }
+
+    public double getTimeBlocked()
+    {
+        return timeBlocked;
+    }
+
+    public String getId()
+    {
+        return id;
+    }
+
     protected abstract void busy(double currentTime);
 
     protected abstract TimeEvent waiting(double currentTime);
 
-    protected abstract void blocked();
+    protected abstract void blocked(double currentTime);
 
-    protected abstract void starved();
+    protected abstract void starved(double currentTime);
 
 }

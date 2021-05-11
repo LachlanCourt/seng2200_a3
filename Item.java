@@ -34,4 +34,9 @@ public class Item
     {
         return processEvents.get(processEvents.size() - 1).getStartTime();
     }
+
+    public ArrayList<ProcessEvent> report()
+    {
+        return processEvents;
+    }
 }

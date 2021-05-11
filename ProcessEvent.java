@@ -1,13 +1,14 @@
 public class ProcessEvent
 {
-    double startTime;
-    double endTime;
+    private double startTime;
+    private double endTime;
+    private String stageID;
 
-    public ProcessEvent(double startTime_, double endTime_)
+    public ProcessEvent(double startTime_, double endTime_, String stageID_)
     {
         startTime = startTime_;
         endTime = endTime_;
-
+        stageID = stageID_;
     }
 
     public double getProcessLength()
@@ -23,5 +24,10 @@ public class ProcessEvent
     public double getStartTime()
     {
         return startTime;
+    }
+
+    public String getStageID()
+    {
+        return stageID;
     }
 }
