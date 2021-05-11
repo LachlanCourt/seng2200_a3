@@ -33,7 +33,7 @@ public class ProductionLine
     {
         Qmax = Qmax_;
 
-        rd = new Random(534643);
+        rd = new Random(24601);
         initialiseLine(M_, N_);
 
         completionTimes = new PriorityQueue<>();
