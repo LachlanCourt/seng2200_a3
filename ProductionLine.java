@@ -1,10 +1,12 @@
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.*;
 
 public class ProductionLine
 {
+    private InitialStage startStage;
+    private FinalStage endStage;
+
     private InitialStage S0;
     private MidStage S1;
     private MidStage S2A;
@@ -28,7 +30,7 @@ public class ProductionLine
     public ProductionLine(double M_, double N_, int Qmax_)
     {
         Qmax = Qmax_;
-        rd = new Random(24601);
+        rd = new Random(123);
 
         initialiseLine(M_, N_);
 
@@ -45,7 +47,7 @@ public class ProductionLine
             // Loop until all stages are effectively "Busy" - No modification is happening in the queues whether adding or removing
             do
             {
-                S0.resetModificationFlag();
+                startStage.resetModificationFlag();
                 for (int i = 0; i < stages.size(); i++)
                 {
                     temp = stages.get(i).process(currentTime);
@@ -55,15 +57,7 @@ public class ProductionLine
                     }
                 }
             }
-            while (S0.getModificationFlag());
-
-            //TEMPORARY --------------------------
-            if (completionTimes.size() == 0)
-            {
-                System.err.println("Empty completionTimes");
-                break;
-            }
-            //-------------------------------------
+            while (startStage.getModificationFlag());
 
             // Now that all of the stages are actively processing, jump to the next time event
             currentTime = completionTimes.remove().getCompletionTime();
@@ -74,7 +68,10 @@ public class ProductionLine
     {
         String working = "";
         working += "PRODUCTION REPORT\n\n";
-        working += "Number of items produced: " + S5.report().size() + "\n\n";
+
+        ArrayList<Item> itemReport = endStage.report();
+
+        working += "Number of items produced: " + itemReport.size() + "\n\n";
 
         // PRODUCTION STAGES -------------------------------------------------------------------------------------------
         working += "Production Stages:\n";
@@ -83,9 +80,8 @@ public class ProductionLine
             String s = " ".repeat(3 - stages.get(i).getId().length());
             String s2 = " ".repeat(15 - String.format("%5.4f", stages.get(i).getTimeStarved()).length());
             double divisor = stages.get(i).getTimeStarved() + stages.get(i).getTimeBlocked();
-            working += stages.get(i).getId() + ":" + s + "    Work: " + String.format("%2.4f", (100 - (divisor / MAX_TIME)*100)) + "%    Starved: " + String.format("%5.4f", stages.get(i).getTimeStarved()) + s2 + "    Blocked: " + String.format("%5.4f", stages.get(i).getTimeBlocked()) + "\n";
+            working += stages.get(i).getId() + ":" + s + "    Work: " + String.format("%2.4f", (100 - (divisor / MAX_TIME) * 100)) + "%    Starved: " + String.format("%5.4f", stages.get(i).getTimeStarved()) + s2 + "    Blocked: " + String.format("%5.4f", stages.get(i).getTimeBlocked()) + "\n";
         }
-
 
         // STORAGE QUEUES ---------------------------------------------------------------------------------------------
         working += "\nStorage Queues:\n";
@@ -95,41 +91,33 @@ public class ProductionLine
         }
 
         // PRODUCTION PATHS -------------------------------------------------------------------------------------------
-        ArrayList<Item> itemReport = S5.report();
-        int aa = 0;
-        int ab = 0;
-        int ba = 0;
-        int bb = 0;
+        HashMap<String, Integer> pathData = new HashMap<>();
         for (int i = 0; i < itemReport.size(); i++)
         {
             Item currentItem = itemReport.get(i);
             ArrayList<ProcessEvent> processReport = currentItem.report();
-            if (processReport.get(2).getStageID().compareTo("S2A") == 0)
+
+            String pathCode = "";
+            for (int j = 0; j < processReport.size(); j++)
             {
-                if (processReport.get(4).getStageID().compareTo("S4A") == 0)
-                {
-                    aa++;
-                }
-                else
-                {
-                    ab++;
-                }
+                pathCode += processReport.get(j).getStageID() + " -> ";
+            }
+            pathCode = pathCode.substring(0, pathCode.length() - 4);
+            if (pathData.containsKey(pathCode))
+            {
+                pathData.put(pathCode, pathData.get(pathCode) + 1);
             }
             else
             {
-                if (processReport.get(4).getStageID().compareTo("S4A") == 0)
-                {
-                    ba++;
-                }
-                else
-                {
-                    bb++;
-                }
+                pathData.put(pathCode, 1);
             }
         }
 
         working += "\nProduction Paths:\n";
-        working += "S2A -> S4A: " + aa + "\n" + "S2A -> S4B: " + ab + "\n" + "S2B -> S4A: " + ba + "\n" + "S2B -> S4B: " + bb + "\n";
+        for (String key : pathData.keySet())
+        {
+            working += key + ": " + pathData.get(key) + "\n";
+        }
 
         // Output to text file
         PrintWriter out;
@@ -145,7 +133,7 @@ public class ProductionLine
         out.println(working);
         out.close();
 
-        return working;
+        return working + "\nProgram complete. Data outputed to \"Report.txt\"";
     }
 
     public void initialiseLine(double M, double N)
@@ -169,17 +157,24 @@ public class ProductionLine
         stages.add(S0);
         S1 = new MidStage(Q01, Q12, "S1");
         stages.add(S1);
+
         S2A = new MidStage(Q12, Q23, "S2A", 2);
         stages.add(S2A);
         S2B = new MidStage(Q12, Q23, "S2B", 2);
         stages.add(S2B);
+
         S3 = new MidStage(Q23, Q34, "S3");
         stages.add(S3);
+
         S4A = new MidStage(Q34, Q45, "S4A", 2);
         stages.add(S4A);
         S4B = new MidStage(Q34, Q45, "S4B", 2);
         stages.add(S4B);
+
         S5 = new FinalStage(Q45, "S5");
         stages.add(S5);
+
+        startStage = S0;
+        endStage = S5;
     }
 }

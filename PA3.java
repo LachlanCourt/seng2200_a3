@@ -25,7 +25,6 @@ public class PA3
         ProductionLine line = new ProductionLine(M, N, Qmax);
         line.produce();
         System.out.println(line.report());
-        System.out.println("Program complete. Data outputed to \"Report.txt\"");
     }
 }
 
