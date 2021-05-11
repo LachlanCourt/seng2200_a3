@@ -8,11 +8,7 @@ public class Item
     public Item()
     {
         processEvents = new ArrayList<>();
-    }
-
-    public void setID(String uniqueID_)
-    {
-        uniqueID = uniqueID_;
+        uniqueID = IdHandler.getID();
     }
 
     public String getID()
