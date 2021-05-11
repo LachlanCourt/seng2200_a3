@@ -25,7 +25,7 @@ public class ProductionLine
     public ProductionLine(double M_, double N_, int Qmax_)
     {
         Qmax = Qmax_;
-        rd = new Random(100);
+        rd = new Random(24601);
 
         initialiseLine(M_, N_);
 
@@ -72,17 +72,61 @@ public class ProductionLine
         String working = "";
         working += "REPORT ON PRODUCTION\n\n";
         working += "Number of items produced: " + S5.report().size() + "\n\n";
-        working += "Storage Queues:\n";
+
+        // PRODUCTION STAGES -------------------------------------------------------------------------------------------
+        working += "Production Stages:\n";
+        for (int i = 0; i < stages.size(); i++)
+        {
+            String s = " ".repeat(3 - stages.get(i).getId().length());
+            String s2 = " ".repeat(15 - String.format("%5.4f", stages.get(i).getTimeStarved()).length());
+            double divisor = stages.get(i).getTimeStarved() + stages.get(i).getTimeBlocked();
+            working += stages.get(i).getId() + ":" + s + "    Work: " + String.format("%2.4f", (100 - (divisor / MAX_TIME)*100)) + "%    Starved: " + String.format("%5.4f", stages.get(i).getTimeStarved()) + s2 + "    Blocked: " + String.format("%5.4f", stages.get(i).getTimeBlocked()) + "\n";
+        }
+
+
+        // STORAGE QUEUES ---------------------------------------------------------------------------------------------
+        working += "\nStorage Queues:\n";
         for (int i = 0; i < queues.size(); i++)
         {
             working += queues.get(i).getID() + ":    " + "AvgItems: " + String.format("%5.4f", queues.get(i).getAvgItems(MAX_TIME)) + "    AvgTime: " + String.format("%5.4f", queues.get(i).getAvgTime()) + "\n";
         }
+
+        // PRODUCTION PATHS -------------------------------------------------------------------------------------------
         ArrayList<Item> itemReport = S5.report();
+        int aa = 0;
+        int ab = 0;
+        int ba = 0;
+        int bb = 0;
         for (int i = 0; i < itemReport.size(); i++)
         {
-
+            Item currentItem = itemReport.get(i);
+            ArrayList<ProcessEvent> processReport = currentItem.report();
+            if (processReport.get(2).getStageID().compareTo("S2A") == 0)
+            {
+                if (processReport.get(4).getStageID().compareTo("S4A") == 0)
+                {
+                    aa++;
+                }
+                else
+                {
+                    ab++;
+                }
+            }
+            else
+            {
+                if (processReport.get(4).getStageID().compareTo("S4A") == 0)
+                {
+                    ba++;
+                }
+                else
+                {
+                    bb++;
+                }
+            }
         }
 
+        working += "\nProduction Paths:\n";
+        working += "S2A -> S4A: " + aa + "\n" + "S2A -> S4B: " + ab + "\n" + "S2B -> S4A: " + ba + "\n" + "S2B -> S4B: " + bb + "\n";
         // Output to text file here----
 
         //-----------------------------

@@ -8,6 +8,9 @@ public class MidStage extends Stage
         id = id_;
         processingFactor = 1;
         status = "waiting";
+        oldTime = 0;
+        timeStarved = 0;
+        timeBlocked = 0;
     }
 
     public MidStage(StorageQueue<Item> prev_, StorageQueue<Item> next_, String id_, double processingFactor_)
@@ -19,6 +22,7 @@ public class MidStage extends Stage
     @Override
     protected void busy(double currentTime)
     {
+        oldTime = currentTime;
         if (currentTime == item.getLastProcessEndTime())
         {
             status = "waiting";
@@ -34,8 +38,13 @@ public class MidStage extends Stage
     }
 
     @Override
-    protected void blocked()
+    protected void blocked(double currentTime)
     {
+        if (currentTime != oldTime)
+        {
+            timeBlocked += currentTime - oldTime;
+            oldTime = currentTime;
+        }
         if (next.add(item))
         {
             status = "waiting";
@@ -43,8 +52,13 @@ public class MidStage extends Stage
     }
 
     @Override
-    protected void starved()
+    protected void starved(double currentTime)
     {
+        if (currentTime != oldTime)
+        {
+            timeStarved += currentTime - oldTime;
+            oldTime = currentTime;
+        }
         if (prev.size() > 0)
         {
             status = "waiting";
@@ -54,6 +68,7 @@ public class MidStage extends Stage
     @Override
     protected TimeEvent waiting(double currentTime)
     {
+        oldTime = currentTime;
         if (prev.size() > 0)
         {
             status = "busy";
