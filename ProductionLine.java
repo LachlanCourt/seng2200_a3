@@ -19,48 +19,22 @@ public class ProductionLine
     private FinalStage S5;
 
     ArrayList<Stage> stages;
+    ArrayList<StorageQueue<Item>> queues;
 
-    private double M;
-    private double N;
     private int Qmax;
 
     PriorityQueue<TimeEvent> completionTimes;
     double currentTime;
-    static final double MAX_TIME = 1000000;
+    static final double MAX_TIME = 10000000;
 
-    private Random rd = new Random(24601);
+    private Random rd;
 
     public ProductionLine(double M_, double N_, int Qmax_)
     {
-        M = M_;
-        N = N_;
         Qmax = Qmax_;
 
-
-        Q01 = new StorageQueue<Item>(Qmax);
-        Q12 = new StorageQueue<Item>(Qmax);
-        Q23 = new StorageQueue<Item>(Qmax);
-        Q34 = new StorageQueue<Item>(Qmax);
-        Q45 = new StorageQueue<Item>(Qmax);
-
-        stages = new ArrayList<Stage>();
-
-        S0 = new InitialStage(Q01);
-        stages.add(S0);
-        S1 = new MidStage(Q01, Q12);
-        stages.add(S1);
-        S2A = new MidStage(Q12, Q23);
-        stages.add(S2A);
-        S2B = new MidStage(Q12, Q23);
-        stages.add(S2B);
-        S3 = new MidStage(Q23, Q34);
-        stages.add(S3);
-        S4A = new MidStage(Q34, Q45);
-        stages.add(S4A);
-        S4B = new MidStage(Q34, Q45);
-        stages.add(S4B);
-        S5 = new FinalStage(Q45);
-        stages.add(S5);
+        rd = new Random(24601);
+        initialiseLine(M_, N_);
 
         completionTimes = new PriorityQueue<>();
         currentTime = 0;
@@ -75,7 +49,7 @@ public class ProductionLine
 
             for (int i = 0; i < stages.size(); i++)
             {
-            temp = stages.get(i).process(currentTime, getProcessingTime());
+            temp = stages.get(i).process(currentTime);
             if (temp != null)
             {
                 completionTimes.add(temp);
@@ -113,11 +87,42 @@ public class ProductionLine
         {
             working += temp.get(i) + "\n";
         }
+        working += temp.size();
         return working;
     }
 
-    private double getProcessingTime()
+    public void initialiseLine(double M, double N)
     {
-        return M + N * (rd.nextDouble() - 0.5);
+        queues = new ArrayList<StorageQueue<Item>>();
+
+        Q01 = new StorageQueue<Item>(Qmax);
+        queues.add(Q01);
+        Q12 = new StorageQueue<Item>(Qmax);
+        queues.add(Q12);
+        Q23 = new StorageQueue<Item>(Qmax);
+        queues.add(Q23);
+        Q34 = new StorageQueue<Item>(Qmax);
+        queues.add(Q34);
+        Q45 = new StorageQueue<Item>(Qmax);
+        queues.add(Q45);
+
+        stages = new ArrayList<Stage>();
+
+        S0 = new InitialStage(Q01, M, N, rd);
+        stages.add(S0);
+        S1 = new MidStage(Q01, Q12);
+        stages.add(S1);
+        S2A = new MidStage(Q12, Q23);
+        stages.add(S2A);
+        S2B = new MidStage(Q12, Q23);
+        stages.add(S2B);
+        S3 = new MidStage(Q23, Q34);
+        stages.add(S3);
+        S4A = new MidStage(Q34, Q45);
+        stages.add(S4A);
+        S4B = new MidStage(Q34, Q45);
+        stages.add(S4B);
+        S5 = new FinalStage(Q45);
+        stages.add(S5);
     }
 }

@@ -1,9 +1,12 @@
 import java.util.Queue;
+import java.util.Random;
 
 public class InitialStage extends Stage
 {
-    public InitialStage(StorageQueue<Item> next_)
+    public InitialStage(StorageQueue<Item> next_, double M_, double N_, Random rd_)
     {
+        setProcessingParams(M_, N_);
+        rd = rd_;
         next = next_;
         status = "waiting";
     }
@@ -39,12 +42,13 @@ public class InitialStage extends Stage
     }
 
     @Override
-    protected TimeEvent waiting(double currentTime, double processingTime)
+    protected TimeEvent waiting(double currentTime)
     {
         status = "busy";
         // Create an item
         item = new Item();
         // Set processing time
+        double processingTime = getProcessingTime();
         Process newProcess = new Process(currentTime, currentTime + processingTime);
         item.addProcess(newProcess);
         // Wait for time to be up

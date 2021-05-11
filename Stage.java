@@ -1,12 +1,18 @@
+import java.util.Random;
+
 public abstract class Stage
 {
     protected String status = "waiting";
     protected Item item;
 
+    private static double M;
+    private static double N;
+    protected static Random rd;
+
     protected StorageQueue<Item> prev;
     protected StorageQueue<Item> next;
 
-    public TimeEvent process(double currentTime, double processingTime)
+    public TimeEvent process(double currentTime)
     {
         TimeEvent temp = null;
         if (status.compareTo("busy") == 0)
@@ -23,14 +29,25 @@ public abstract class Stage
         }
         if (status.compareTo("waiting") == 0)
         {
-            temp = waiting(currentTime, processingTime);
+            temp = waiting(currentTime);
         }
         return temp;
     }
 
+    protected void setProcessingParams(double M_, double N_)
+    {
+        M = M_;
+        N = N_;
+    }
+
+    protected double getProcessingTime()
+    {
+        return M + N * (rd.nextDouble() - 0.5);
+    }
+
     protected abstract void busy(double currentTime);
 
-    protected abstract TimeEvent waiting(double currentTime, double processingTime);
+    protected abstract TimeEvent waiting(double currentTime);
 
     protected abstract void blocked();
 

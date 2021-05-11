@@ -40,13 +40,14 @@ public class FinalStage extends Stage
     }
 
     @Override
-    protected TimeEvent waiting(double currentTime, double processingTime)
+    protected TimeEvent waiting(double currentTime)
     {
 
         if (prev.size() > 0)
         {
             status = "busy";
             item = prev.remove();
+            double processingTime = getProcessingTime();
             Process newProcess = new Process(currentTime, currentTime + processingTime);
             item.addProcess(newProcess);
             // Wait for time to be up
