@@ -63,7 +63,7 @@ public class ProductionLine
             //-------------------------------------
 
             // Now that all of the stages are actively processing, jump to the next time event
-            currentTime = completionTimes.poll().getCompletionTime();
+            currentTime = completionTimes.remove().getCompletionTime();
         }
     }
 
