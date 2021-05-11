@@ -30,7 +30,7 @@ public class ProductionLine
     public ProductionLine(double M_, double N_, int Qmax_)
     {
         Qmax = Qmax_;
-        rd = new Random(123);
+        rd = new Random(24601);
 
         initialiseLine(M_, N_);
 
@@ -71,23 +71,26 @@ public class ProductionLine
 
         ArrayList<Item> itemReport = endStage.report();
 
-        working += "Number of items produced: " + itemReport.size() + "\n\n";
+        working += "Number of items produced: " + itemReport.size() + "\n";
+        working += "Time taken: " + (int)MAX_TIME + " units\n\n";
 
         // PRODUCTION STAGES -------------------------------------------------------------------------------------------
-        working += "Production Stages:\n";
+        working += "Production Stages:\n\n";
         for (int i = 0; i < stages.size(); i++)
         {
             String s = " ".repeat(3 - stages.get(i).getId().length());
             String s2 = " ".repeat(15 - String.format("%5.4f", stages.get(i).getTimeStarved()).length());
             double divisor = stages.get(i).getTimeStarved() + stages.get(i).getTimeBlocked();
             working += stages.get(i).getId() + ":" + s + "    Work: " + String.format("%2.4f", (100 - (divisor / MAX_TIME) * 100)) + "%    Starved: " + String.format("%5.4f", stages.get(i).getTimeStarved()) + s2 + "    Blocked: " + String.format("%5.4f", stages.get(i).getTimeBlocked()) + "\n";
+            //working += "--------------------------------------------------------------------------\n";
         }
 
         // STORAGE QUEUES ---------------------------------------------------------------------------------------------
-        working += "\nStorage Queues:\n";
+        working += "\nStorage Queues:\n\n";
         for (int i = 0; i < queues.size(); i++)
         {
             working += queues.get(i).getID() + ":    " + "AvgItems: " + String.format("%5.4f", queues.get(i).getAvgItems(MAX_TIME)) + "    AvgTime: " + String.format("%5.4f", queues.get(i).getAvgTime()) + "\n";
+            //working += "-----------------------------------------------\n";
         }
 
         // PRODUCTION PATHS -------------------------------------------------------------------------------------------
@@ -113,17 +116,18 @@ public class ProductionLine
             }
         }
 
-        working += "\nProduction Paths:\n";
+        working += "\nProduction Paths:\n\n";
         for (String key : pathData.keySet())
         {
             working += key + ": " + pathData.get(key) + "\n";
+            //working += "-----------------------------------------\n";
         }
 
         // Output to text file
         PrintWriter out;
         try
         {
-            out = new PrintWriter("Report.txt");
+            out = new PrintWriter("production_report.txt");
         }
         catch (FileNotFoundException e)
         {
@@ -133,12 +137,12 @@ public class ProductionLine
         out.println(working);
         out.close();
 
-        return working + "\nProgram complete. Data outputed to \"Report.txt\"";
+        return working + "\nProgram complete. Data outputted to \"production_report.txt\"";
     }
 
     public void initialiseLine(double M, double N)
     {
-        queues = new ArrayList<StorageQueue<Item>>();
+        queues = new ArrayList<>();
 
         StorageQueue<Item> Q01 = new StorageQueue<Item>(Qmax, "Q01");
         queues.add(Q01);
@@ -151,7 +155,7 @@ public class ProductionLine
         StorageQueue<Item> Q45 = new StorageQueue<Item>(Qmax, "Q45");
         queues.add(Q45);
 
-        stages = new ArrayList<Stage>();
+        stages = new ArrayList<>();
 
         S0 = new InitialStage(Q01, "S0", M, N, rd);
         stages.add(S0);
@@ -171,7 +175,7 @@ public class ProductionLine
         S4B = new MidStage(Q34, Q45, "S4B", 2);
         stages.add(S4B);
 
-        S5 = new FinalStage(Q45, "S5");
+        FinalStage S5 = new FinalStage(Q45, "S5");
         stages.add(S5);
 
         startStage = S0;
