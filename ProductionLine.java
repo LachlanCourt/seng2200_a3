@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.*;
@@ -16,23 +17,23 @@ public class ProductionLine
     private MidStage S4B;
     private FinalStage S5;
 
-    ArrayList<Stage> stages;
-    ArrayList<StorageQueue<Item>> queues;
+    private ArrayList<Stage> stages;
+    private ArrayList<StorageQueue<Item>> queues;
 
-    private final int Qmax;
-
-    PriorityQueue<TimeEvent> completionTimes;
-    double currentTime;
-    static final double MAX_TIME = 10000000;
+    private PriorityQueue<TimeEvent> completionTimes;
+    private double currentTime;
+    private static final double MAX_TIME = 10000000;
 
     private Random rd;
 
-    public ProductionLine(double M_, double N_, int Qmax_)
+    public ProductionLine(double M_, double N_, int Qmax_, String filename)
     {
-        Qmax = Qmax_;
         rd = new Random(24601);
 
-        initialiseLine(M_, N_);
+        if (!initialiseLineFromFile(M_, N_, Qmax_, filename))
+        {
+            initialiseDefaultLine(M_, N_, Qmax_);
+        }
 
         completionTimes = new PriorityQueue<>();
         currentTime = 0;
@@ -72,16 +73,19 @@ public class ProductionLine
         ArrayList<Item> itemReport = endStage.report();
 
         working += "Number of items produced: " + itemReport.size() + "\n";
-        working += "Time taken: " + (int)MAX_TIME + " units\n\n";
+        working += "Time taken: " + (int) MAX_TIME + " units\n\n";
 
         // PRODUCTION STAGES -------------------------------------------------------------------------------------------
         working += "Production Stages:\n\n";
         for (int i = 0; i < stages.size(); i++)
         {
-            String s = " ".repeat(3 - stages.get(i).getId().length());
-            String s2 = " ".repeat(15 - String.format("%5.4f", stages.get(i).getTimeStarved()).length());
             double divisor = stages.get(i).getTimeStarved() + stages.get(i).getTimeBlocked();
-            working += stages.get(i).getId() + ":" + s + "    Work: " + String.format("%2.4f", (100 - (divisor / MAX_TIME) * 100)) + "%    Starved: " + String.format("%5.4f", stages.get(i).getTimeStarved()) + s2 + "    Blocked: " + String.format("%5.4f", stages.get(i).getTimeBlocked()) + "\n";
+            String work = String.format("%2.4f", (100 - (divisor / MAX_TIME) * 100));
+            String s = " ".repeat(3 - stages.get(i).getId().length());
+            String s2 = " ".repeat(8 - work.length());
+            String s3 = " ".repeat(15 - String.format("%5.4f", stages.get(i).getTimeStarved()).length());
+
+            working += stages.get(i).getId() + ":" + s + "    Work: " + s2 + work + "%    Starved: " + String.format("%5.4f", stages.get(i).getTimeStarved()) + s3 + "    Blocked: " + String.format("%5.4f", stages.get(i).getTimeBlocked()) + "\n";
             //working += "--------------------------------------------------------------------------\n";
         }
 
@@ -140,8 +144,10 @@ public class ProductionLine
         return working + "\nProgram complete. Data outputted to \"production_report.txt\"";
     }
 
-    public void initialiseLine(double M, double N)
+    public void initialiseDefaultLine(double M, double N, int Qmax)
     {
+        System.out.println("Loading default production line...\n");
+
         queues = new ArrayList<>();
 
         StorageQueue<Item> Q01 = new StorageQueue<Item>(Qmax, "Q01");
@@ -180,5 +186,120 @@ public class ProductionLine
 
         startStage = S0;
         endStage = S5;
+    }
+
+    public boolean initialiseLineFromFile(double M, double N, int Qmax, String filename)
+    {
+        Scanner input;
+        try
+        {
+            input = new Scanner(new File(filename));
+        }
+        catch (FileNotFoundException e)
+        {
+            return false;
+        }
+        catch (NullPointerException e)
+        {
+            return false;
+        }
+        System.out.println("Interpretting production line from text file...\n");
+
+        try
+        {
+            // Read Queues
+            queues = new ArrayList<>();
+            StorageQueue<Item> tempQueue;
+            while (input.hasNext("Q.*"))
+            {
+                queues.add(new StorageQueue<Item>(Qmax, input.nextLine()));
+            }
+
+            // Read Stages
+            stages = new ArrayList<>();
+
+            // InitialStage
+            if (input.hasNext("S.*"))
+            {
+                String id = input.next();
+                String nextId = input.next();
+
+                StorageQueue<Item> next = getQueueByID(nextId);
+                if (next == null)
+                {
+                    return false;
+                }
+
+                double processingFactor = 1;
+                if (input.hasNextDouble())
+                {
+                    processingFactor = input.nextDouble();
+                }
+                stages.add(new InitialStage(next, id, M, N, rd, processingFactor));
+            }
+
+            while (input.hasNext("S.*"))
+            {
+                String id = input.next();
+                String prevId = input.next();
+                String nextId = input.next();
+
+                StorageQueue<Item> prev = getQueueByID(prevId);
+                StorageQueue<Item> next = getQueueByID(nextId);
+                if (next == null || prev == null)
+                {
+                    return false;
+                }
+
+                double processingFactor = 1;
+                if (input.hasNextDouble())
+                {
+                    processingFactor = input.nextDouble();
+                }
+                stages.add(new MidStage(prev, next, id, processingFactor));
+            }
+
+            // Final stage
+            if (input.next().compareTo("F") == 0)
+            {
+                //input.nextLine();
+                String id = input.next();
+                String prevId = input.next();
+
+                StorageQueue<Item> prev = getQueueByID(prevId);
+                if (prev == null)
+                {
+                    return false;
+                }
+
+                double processingFactor = 1;
+                if (input.hasNextDouble())
+                {
+                    processingFactor = input.nextDouble();
+                }
+                stages.add(new FinalStage(prev, id, processingFactor));
+
+                startStage = (InitialStage) stages.get(0);
+                endStage = (FinalStage) stages.get(stages.size() - 1);
+            }
+            return true;
+        }
+        catch (Exception e)
+        {
+            System.err.println("Invalid text file format");
+            return false;
+        }
+    }
+
+    private StorageQueue<Item> getQueueByID(String nextID)
+    {
+        for (int i = 0; i < queues.size(); i++)
+        {
+            if (queues.get(i).getID().compareTo(nextID) == 0)
+            {
+                return queues.get(i);
+            }
+        }
+        return null;
     }
 }

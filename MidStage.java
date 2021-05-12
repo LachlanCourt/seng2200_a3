@@ -6,7 +6,7 @@ public class MidStage extends Stage
         next = next_;
         id = id_;
         processingFactor = 1;
-        status = "waiting";
+        status = "starved";
         oldTime = 0;
         timeStarved = 0;
         timeBlocked = 0;
