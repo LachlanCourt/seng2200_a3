@@ -30,7 +30,7 @@ public class FinalStage extends Stage
         if (currentTime == item.getLastProcessEndTime())
         {
             completedItems.add(item);
-            status = "waiting";
+            status = "starved";
         }
     }
 
