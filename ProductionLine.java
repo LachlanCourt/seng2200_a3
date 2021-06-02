@@ -285,7 +285,7 @@ public class ProductionLine
             while (input.hasNext("Q.*"))
             {
                 // Add a new queue, labelling it with the name given in the file
-                queues.add(new StorageQueue(Qmax, input.nextLine()));
+                queues.add(new StorageQueue<Item>(Qmax, input.nextLine()));
             }
 
             // Read Stages
