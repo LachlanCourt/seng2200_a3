@@ -10,7 +10,7 @@ import java.util.Random;
 
 public abstract class Stage
 {
-    enum Statuses
+    protected enum Statuses
     {
         BUSY,
         BLOCKED,
