@@ -42,14 +42,14 @@ public class InitialStage extends Stage
     {
         // Update the oldTime which is only used when blocked or starved
         oldTime = currentTime;
-        //If the current Item has finished being processed, attempt to add it to the next queue
+        // If the current Item has finished being processed, attempt to add it to the next queue
         if (currentTime == item.getLastProcessEndTime())
         {
             // Assume the add has been successful and set the status to WAITING
             currentStatus = Statuses.WAITING;
             if (!next.add(item)) // add() returns a boolean if successful
             {
-                // If adding the item was unsuccessful, the next queue must be full.
+                // If adding the item was unsuccessful, the next queue must be full
                 currentStatus = Statuses.BLOCKED;
             }
             else
@@ -62,7 +62,6 @@ public class InitialStage extends Stage
 
     /**
      * Tries to add an item to the next queue
-     *
      * @param currentTime current simulation time
      */
     @Override

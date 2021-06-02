@@ -90,7 +90,6 @@ public class FinalStage extends Stage
     {
         // Update the oldTime which is only used when blocked or starved
         oldTime = currentTime;
-
         // If there is an Item in the previous queue, take the next one out
         if (prev.size() > 0)
         {
@@ -107,7 +106,6 @@ public class FinalStage extends Stage
              */
             ProcessEvent newProcessEvent = new ProcessEvent(currentTime, currentTime + processingTime, id);
             item.addProcess(newProcessEvent);
-
             // Wait for time to be up
             return new TimeEvent(newProcessEvent.getEndTime());
         }
