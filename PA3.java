@@ -1,39 +1,56 @@
+/*******************************************************************************
+ ****    SENG2200 Assignment 3
+ ****    c3308061
+ ****    Lachlan Court
+ ****    03/06/2021
+ ****    This class is the starting point of the program
+ *******************************************************************************/
 public class PA3
 {
+    // Instance variables to be read from file arguments
     private double M;
     private double N;
     private int Qmax;
 
+    // Main function
     public static void main(String[] args)
     {
+        // There should be either 3 or 4 arguments. Terminate if there is an invalid number
         if (args.length < 3 || args.length > 4)
         {
             System.err.println("Invalid input data. Terminating...");
             System.exit(-1);
         }
+        // If there is a suitable number of arguments, pass those arguments to the run() method
         PA3 assign = new PA3();
         assign.run(args);
     }
 
     public void run(String[] args)
     {
-        // Set up values
+        // Set up values from arguments
         M = Double.valueOf(args[0]); // Average processing time
         N = Double.valueOf(args[1]); // Range of processing time
         Qmax = Integer.valueOf(args[2]); // Capacity of storage queues
+        // Assume there is no filename
         String filename = null;
+        // If there is a 4th argument, iterpret it as the filename
         if(args.length == 4)
         {
             filename = args[3];
         }
 
+        // This is where the magic happens. Create a new production line, passing it the interpreted arguments
         ProductionLine line = new ProductionLine(M, N, Qmax, filename);
+        // Ask the line to produce(), that is, to run a simulation
         line.produce();
+        // Ask the line to report(), that is to output a summary of the simulation data
         System.out.println(line.report());
     }
 }
 
 /*
+Below are some Cats. Enjoy!
 
 MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMMMMMMMMMMMMWKxdx0WMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
@@ -106,5 +123,4 @@ MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMWXXXXKkdl:;;:oxOXNNN0
 MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNKKKKOxdl:;:;
 MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMWX0OOx
 MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMK
-
  */
