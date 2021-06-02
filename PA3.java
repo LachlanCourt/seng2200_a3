@@ -40,12 +40,14 @@ public class PA3
             filename = args[3];
         }
 
-        // This is where the magic happens. Create a new production line, passing it the interpreted arguments
+        // This is where the magic happens, a nice 3-liner.
+        // Create a new production line, passing it the interpreted arguments
         ProductionLine line = new ProductionLine(M, N, Qmax, filename);
         // Ask the line to produce(), that is, to run a simulation
         line.produce();
         // Ask the line to report(), that is to output a summary of the simulation data
         System.out.println(line.report());
+        // Oh yeah. It's all coming together
     }
 }
 
