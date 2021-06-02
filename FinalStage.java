@@ -10,7 +10,7 @@ public class FinalStage extends Stage
         prev = prev_;
         id = id_;
         processingFactor = 1;
-        status = "waiting";
+        currentStatus = Statuses.WAITING;
         oldTime = 0;
         timeStarved = 0;
         timeBlocked = 0;
@@ -30,7 +30,7 @@ public class FinalStage extends Stage
         if (currentTime == item.getLastProcessEndTime())
         {
             completedItems.add(item);
-            status = "starved";
+            currentStatus = Statuses.STARVED;
         }
     }
 
@@ -51,7 +51,7 @@ public class FinalStage extends Stage
         }
         if (prev.size() > 0)
         {
-            status = "waiting";
+            currentStatus = Statuses.WAITING;
         }
     }
 
@@ -62,7 +62,7 @@ public class FinalStage extends Stage
 
         if (prev.size() > 0)
         {
-            status = "busy";
+            currentStatus = Statuses.BUSY;
             item = prev.remove(currentTime);
             modificationFlag = true;
             double processingTime = getProcessingTime();
@@ -74,7 +74,7 @@ public class FinalStage extends Stage
         }
         else
         {
-            status = "starved";
+            currentStatus = Statuses.STARVED;
             return null;
         }
     }

@@ -9,7 +9,7 @@ public class InitialStage extends Stage
         id = id_;
         setProcessingParams(M_, N_);
         processingFactor = 1;
-        status = "waiting";
+        currentStatus = Statuses.WAITING;
         oldTime = 0;
         timeStarved = 0;
         timeBlocked = 0;
@@ -27,10 +27,10 @@ public class InitialStage extends Stage
         oldTime = currentTime;
         if (currentTime == item.getLastProcessEndTime())
         {
-            status = "waiting";
+            currentStatus = Statuses.WAITING;
             if (!next.add(item))
             {
-                status = "blocked";
+                currentStatus = Statuses.BLOCKED;
             }
             else
             {
@@ -49,7 +49,7 @@ public class InitialStage extends Stage
         }
         if (next.add(item))
         {
-            status = "waiting";
+            currentStatus = Statuses.WAITING;
         }
     }
 
@@ -64,7 +64,7 @@ public class InitialStage extends Stage
     protected TimeEvent waiting(double currentTime)
     {
         oldTime = currentTime;
-        status = "busy";
+        currentStatus = Statuses.BUSY;
         // Create an item
         item = new Item();
         // Set processing time

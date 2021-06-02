@@ -6,7 +6,7 @@ public class MidStage extends Stage
         next = next_;
         id = id_;
         processingFactor = 1;
-        status = "starved";
+        currentStatus = Statuses.STARVED;
         oldTime = 0;
         timeStarved = 0;
         timeBlocked = 0;
@@ -24,10 +24,10 @@ public class MidStage extends Stage
         oldTime = currentTime;
         if (currentTime == item.getLastProcessEndTime())
         {
-            status = "waiting";
+            currentStatus = Statuses.WAITING;
             if (!next.add(item))
             {
-                status = "blocked";
+                currentStatus = Statuses.BLOCKED;
             }
             else
             {
@@ -46,7 +46,7 @@ public class MidStage extends Stage
         }
         if (next.add(item))
         {
-            status = "waiting";
+            currentStatus = Statuses.WAITING;
         }
     }
 
@@ -60,7 +60,7 @@ public class MidStage extends Stage
         }
         if (prev.size() > 0)
         {
-            status = "waiting";
+            currentStatus = Statuses.WAITING;
         }
     }
 
@@ -70,7 +70,7 @@ public class MidStage extends Stage
         oldTime = currentTime;
         if (prev.size() > 0)
         {
-            status = "busy";
+            currentStatus = Statuses.BUSY;
             item = prev.remove(currentTime);
             modificationFlag = true;
             double processingTime = getProcessingTime();
@@ -82,7 +82,7 @@ public class MidStage extends Stage
         }
         else
         {
-            status = "starved";
+            currentStatus = Statuses.STARVED;
             return null;
         }
     }
