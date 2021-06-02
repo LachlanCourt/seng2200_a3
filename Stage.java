@@ -6,7 +6,6 @@
  ****    This class is a parent class of a Stage in the production line. It is
  ****    is abstract and declares the necessary functions to operate
  *******************************************************************************/
-
 import java.util.Random;
 
 public abstract class Stage

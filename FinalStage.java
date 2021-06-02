@@ -97,7 +97,7 @@ public class FinalStage extends Stage
             // Update the status and remove the next Item from the Queue
             currentStatus = Statuses.BUSY;
             item = prev.remove(currentTime);
-            // Because a Queue was changed, change the modification flag to true
+            // Because a Queue was changed, update the modification flag
             modificationFlag = true;
             // Calculate a random time the item is due to be complete
             double processingTime = getProcessingTime();
