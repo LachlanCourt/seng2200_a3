@@ -1,26 +1,43 @@
+/*******************************************************************************
+ ****    SENG2200 Assignment 3
+ ****    c3308061
+ ****    Lachlan Court
+ ****    03/06/2021
+ ****    This class is a singleton designed to give each Item a unique ID
+ *******************************************************************************/
+
 import java.util.Random;
 
 public class IdHandler
 {
-        private static IdHandler instance = null;
+    // Assume the instance does not exist. Declare it static so that it will be the same for all instantiations
+    private static IdHandler instance = null;
 
-        private static Random IDrd;
+    // Define the random number generation
+    private static Random IDrd;
 
-        private IdHandler()
+    // A private constructor means that the class can only construct an instance of itself. Set a random seed
+    private IdHandler()
+    {
+        IDrd = new Random(100);
+    }
+
+    public static String getID()
+    {
+        // If the instance does not exist, instantiate it which will generate the random seed
+        if (instance == null)
         {
-            IDrd = new Random(100);
+            instance = new IdHandler();
         }
 
-        public static String getID()
+        // Generate an ID. Start with an empty String
+        String id = "";
+        // Generate an ID 20 characters long and then return
+        for (int i = 0; i < 20; i++)
         {
-            if (instance == null)
-                instance = new IdHandler();
-
-            String id = "";
-            for (int i = 0; i<20;i++)
-            {
-                id += Character.toString(IDrd.nextInt(25) + 97);
-            }
-            return id;
+            // Pick a random lowercase character to add to id
+            id += Character.toString(IDrd.nextInt(25) + 97);
         }
+        return id;
+    }
 }
