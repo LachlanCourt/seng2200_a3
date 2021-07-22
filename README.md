@@ -10,6 +10,6 @@ This particular simulator includes capability to read the production line from a
 The program has the capability to read the production line from a text file. Check out `production.txt` to determine the formatting requirements. This is an optional parameter, if not given the program will load a hardcoded default line which matches `production.txt` as per the specification.
 - M: Average processing time of a given item in a stage, eg. `1000`
 - N: Range of processing time of a given item in a stage, eg. `1000`
-- Qmax: Maximum number of items in a queue at any given time, eg `7`
+- Qmax: Maximum number of items in a queue at any given time, eg. `7`
 
 `java PA3 <M> <N> <Qmax> [filename]`
